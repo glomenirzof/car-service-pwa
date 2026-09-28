@@ -1,3 +1,4 @@
+import {parseBoot} from './boot';
 import {bookingIcs} from '@shared/ics';
 import {normalizePhone, formatPhone} from '@shared/phone';
 import {resolvePeriod, localDate, addDays, isoWeekday} from '@shared/periods';
@@ -61,5 +62,22 @@ describe('booking contract', () => {
     expect(r.name).toBe('Иван');
     expect(r).not.toHaveProperty('price');
     expect(createBookingBody.safeParse({...r, consent: false}).success).toBe(false);
+  });
+});
+
+describe('boot config', () => {
+  const good = {app: 'client', slug: 'alpha', name: 'A', shortName: 'A', accent: '#112233', background: '#000000', basePath: '/s/alpha', assetBase: '/t/alpha', assistantName: 'X'};
+  it('accepts a rendered shell config', () => {
+    expect(parseBoot(good)).toEqual(good);
+  });
+  it.each([
+    ['app', 'admin'],
+    ['slug', '../x'],
+    ['accent', 'red'],
+    ['basePath', '/other'],
+    ['assetBase', 'https://evil.example/t'],
+    ['name', 5],
+  ])('rejects invalid %s', (key, value) => {
+    expect(() => parseBoot({...good, [key]: value})).toThrow(key);
   });
 });

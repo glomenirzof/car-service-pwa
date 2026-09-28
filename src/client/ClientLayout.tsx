@@ -1,6 +1,7 @@
 import {Outlet} from 'react-router';
 import {CalendarCheck2, House, MessageCircle, Wrench} from 'lucide-react';
 import {BottomNav, type NavItem} from '@/components/app/BottomNav';
+import {UpdatePrompt} from '@/components/app/UpdatePrompt';
 import {useBoot} from '@/app/boot-context';
 import {useStudio} from './studio-context';
 import {useSavedBookings} from './store';
@@ -24,6 +25,7 @@ export function ClientLayout() {
         К содержимому
       </a>
       <Outlet />
+      <UpdatePrompt />
       <BottomNav items={items} label={`Навигация ${name}`} />
       <BookingSheet />
     </>

@@ -108,3 +108,13 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/* Waiting service worker: floats above the bottom navigation. */
+.app-update-prompt {
+  position: fixed;
+  inset-inline: var(--spacing-3);
+  bottom: calc(var(--bottom-nav-height) + var(--safe-bottom) + var(--spacing-2));
+  z-index: 40;
+  max-width: 480px;
+  margin-inline: auto;
+}

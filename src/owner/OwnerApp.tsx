@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {lazy, useState} from 'react';
 import {createBrowserRouter, RouterProvider, useRouteError} from 'react-router';
 import {Button} from '@astryxdesign/core/Button';
 import {VStack} from '@astryxdesign/core/Stack';
@@ -13,8 +13,10 @@ import {SchedulePage} from './pages/SchedulePage';
 import {OwnerBookingPage} from './pages/OwnerBookingPage';
 import {StatsPage} from './pages/StatsPage';
 import {SearchPage} from './pages/SearchPage';
-import {OwnerAssistantPage} from './pages/OwnerAssistantPage';
 import {MorePage} from './pages/MorePage';
+import {LazyPage} from '@/components/app/LazyPage';
+
+const OwnerAssistantPage = lazy(() => import('./pages/OwnerAssistantPage').then((m) => ({default: m.OwnerAssistantPage})));
 
 function RouteError() {
   const error = useRouteError();
@@ -40,7 +42,7 @@ export function createOwnerRouter(boot: Boot) {
               {path: 'bookings/:bookingId', element: <OwnerBookingPage />},
               {path: 'stats', element: <StatsPage />},
               {path: 'search', element: <SearchPage />},
-              {path: 'assistant', element: <OwnerAssistantPage />},
+              {path: 'assistant', element: <LazyPage><OwnerAssistantPage /></LazyPage>},
               {path: 'more', element: <MorePage />},
               {path: '*', element: <EmptyBlock title="Страница не найдена" actions={<Button label="К расписанию" href="/" />} />},
             ],

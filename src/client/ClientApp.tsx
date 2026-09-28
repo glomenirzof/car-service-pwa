@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {lazy, useState} from 'react';
 import {createBrowserRouter, RouterProvider, Outlet, useRouteError} from 'react-router';
 import {Button} from '@astryxdesign/core/Button';
 import {VStack} from '@astryxdesign/core/Stack';
@@ -13,8 +13,10 @@ import {HomePage} from './pages/HomePage';
 import {ServicesPage} from './pages/ServicesPage';
 import {MyBookingsPage} from './pages/MyBookingsPage';
 import {BookingPage} from './pages/BookingPage';
-import {AssistantPage} from './pages/AssistantPage';
 import {TokenImportPage} from './pages/TokenImportPage';
+import {LazyPage} from '@/components/app/LazyPage';
+
+const AssistantPage = lazy(() => import('./pages/AssistantPage').then((m) => ({default: m.AssistantPage})));
 
 function StudioGate() {
   const {slug} = useBoot();
@@ -75,7 +77,7 @@ export function createClientRouter(boot: Boot) {
               {path: 'services', element: <ServicesPage />},
               {path: 'bookings', element: <MyBookingsPage />},
               {path: 'bookings/:bookingId', element: <BookingPage />},
-              {path: 'assistant', element: <AssistantPage />},
+              {path: 'assistant', element: <LazyPage><AssistantPage /></LazyPage>},
               {path: 'b', element: <TokenImportPage />},
               {path: '*', element: <NotFound />},
             ],

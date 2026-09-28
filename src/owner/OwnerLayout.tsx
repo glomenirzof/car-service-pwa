@@ -1,6 +1,7 @@
 import {Outlet} from 'react-router';
 import {BarChart3, CalendarDays, Menu, MessageCircle} from 'lucide-react';
 import {BottomNav, type NavItem} from '@/components/app/BottomNav';
+import {UpdatePrompt} from '@/components/app/UpdatePrompt';
 import {useOwnerStudio} from './owner-context';
 
 export function OwnerLayout() {
@@ -17,6 +18,7 @@ export function OwnerLayout() {
         К содержимому
       </a>
       <Outlet />
+      <UpdatePrompt />
       <BottomNav items={items} label="Кабинет" />
     </>
   );
