@@ -12,7 +12,8 @@
     "jsx": "react-jsx",
     "types": [
       "node",
-      "vitest/globals"
+      "vitest/globals",
+      "vite/client"
     ],
     "strict": true,
     "noUncheckedIndexedAccess": true,
@@ -42,7 +43,9 @@
     "tests",
     "e2e",
     "src/**/*.test.ts",
-    "src/**/*.test.tsx"
+    "src/**/*.test.tsx",
+    "src/test",
+    "src/vite-env.d.ts"
   ],
   "exclude": [
     "scripts/functions-dev-server.ts"

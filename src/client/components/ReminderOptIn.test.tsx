@@ -2,9 +2,10 @@ import {screen} from '@testing-library/react';
 import {ReminderOptIn} from './ReminderOptIn';
 import {renderApp} from '@/test/render';
 import type {ClientBooking} from '@/shared/types';
+import type * as EnvModule from '@/shared/env';
 
 vi.mock('@/shared/env', async (orig) => {
-  const mod = await orig<typeof import('@/shared/env')>();
+  const mod = await orig<typeof EnvModule>();
   return {...mod, env: {...mod.env, vapidPublicKey: 'BExampleKey'}};
 });
 
