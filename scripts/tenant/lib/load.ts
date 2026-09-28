@@ -1,6 +1,6 @@
 import {readFileSync, readdirSync, existsSync, statSync} from 'node:fs';
 import {resolve, join} from 'node:path';
-import {businessConfigSchema, formatConfigIssues, type BusinessConfig} from '../../../supabase/functions/_shared/tenant-config.ts';
+import {businessConfigSchema, formatConfigIssues, type BusinessConfig} from '../../../supabase/functions/_shared/core/tenant-config.ts';
 
 export const ROOT = resolve(import.meta.dirname, '../../..');
 // TENANTS_DIR can be overridden for isolated pipeline tests.

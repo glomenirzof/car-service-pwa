@@ -3,7 +3,7 @@
 import {writeFileSync, mkdirSync} from 'node:fs';
 import {join} from 'node:path';
 import {z} from 'zod';
-import {businessConfigSchema} from '../../supabase/functions/_shared/tenant-config.ts';
+import {businessConfigSchema} from '../../supabase/functions/_shared/core/tenant-config.ts';
 import {ROOT} from './lib/load.ts';
 
 export function businessJsonSchema() {

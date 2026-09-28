@@ -65,6 +65,7 @@ $$;
 -- Public API (anon and authenticated alike).
 grant execute on function
   app.public_tenant(text),
+  app.tenant_id_for_public(text),
   app.public_availability(text, uuid, date, date),
   app.public_create_booking(text, uuid, timestamptz, text, text, text, text, text, uuid, bytea),
   app.public_get_booking(text, bytea),

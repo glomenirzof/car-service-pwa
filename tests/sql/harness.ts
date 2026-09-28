@@ -2,7 +2,7 @@ import postgres, {type Sql, type TransactionSql} from 'postgres';
 import {randomUUID, createHash, randomBytes} from 'node:crypto';
 import {adminUrl, TEMPLATE_DB} from './env.ts';
 import {buildPublishPayload, configHash} from '../../scripts/tenant/lib/payload.ts';
-import type {BusinessConfig} from '../../supabase/functions/_shared/tenant-config.ts';
+import type {BusinessConfig} from '../../supabase/functions/_shared/core/tenant-config.ts';
 
 export type TestDb = {sql: Sql; name: string; close: () => Promise<void>};
 

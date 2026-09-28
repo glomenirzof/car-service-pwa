@@ -4,7 +4,7 @@
 import sharp from 'sharp';
 import {mkdirSync, writeFileSync, copyFileSync, existsSync, readFileSync} from 'node:fs';
 import {join, extname} from 'node:path';
-import type {BusinessConfig} from '../../../supabase/functions/_shared/tenant-config.ts';
+import type {BusinessConfig} from '../../../supabase/functions/_shared/core/tenant-config.ts';
 import {STARTUP_DEVICES, startupFile, MEDIA_WIDTHS} from './devices.ts';
 import {mediaImages, tenantDir} from './load.ts';
 import {renderManifest} from './shell.ts';

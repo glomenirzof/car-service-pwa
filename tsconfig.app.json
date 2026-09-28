@@ -22,9 +22,9 @@
     "skipLibCheck": true,
     "paths": {
       "@/*": ["./src/*"],
-      "@shared/*": ["./supabase/functions/_shared/*"]
+      "@shared/*": ["./supabase/functions/_shared/core/*"]
     }
   },
-  "include": ["src", "supabase/functions/_shared"],
+  "include": ["src", "supabase/functions/_shared/core"],
   "exclude": ["src/sw", "supabase/functions/_shared/**/*.deno.ts", "**/*.test.ts", "**/*.test.tsx"]
 }

@@ -1,4 +1,4 @@
-import {businessConfigSchema, formatConfigIssues} from '../../../supabase/functions/_shared/tenant-config.ts';
+import {businessConfigSchema, formatConfigIssues} from '../../../supabase/functions/_shared/core/tenant-config.ts';
 import {fixtureConfig} from '../../../tests/fixtures/business.ts';
 import {renderShell, renderManifest, bootConfig} from './shell.ts';
 import {buildPublishPayload, configHash} from './payload.ts';

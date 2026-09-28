@@ -1,0 +1,52 @@
+# Supabase CLI configuration (local stack + function settings for deploy).
+project_id = "car-service-pwa"
+
+[api]
+enabled = true
+port = 54321
+# The "app" schema is intentionally NOT exposed through the Data API: all data
+# access goes through Edge Functions that call app.* SQL functions.
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+major_version = 17
+
+[db.seed]
+enabled = true
+sql_paths = ["./seed.sql"]
+
+[auth]
+enabled = true
+site_url = "http://127.0.0.1:5173"
+additional_redirect_urls = ["http://127.0.0.1:5173/s/*/owner/**", "http://127.0.0.1:4173/s/*/owner/**"]
+jwt_expiry = 3600
+# No public owner sign-up: owners are created with `npm run owner:invite`.
+enable_signup = false
+enable_anonymous_sign_ins = false
+
+[auth.email]
+enable_signup = false
+enable_confirmations = true
+double_confirm_changes = true
+
+[storage]
+enabled = true
+file_size_limit = "10MiB"
+
+# verify_jwt = false: public-api is public by design; owner-api and assistant
+# verify the user's access token themselves (JWKS) and check membership in SQL;
+# notify-dispatch is protected by the CRON_SECRET header.
+[functions.public-api]
+verify_jwt = false
+
+[functions.owner-api]
+verify_jwt = false
+
+[functions.assistant]
+verify_jwt = false
+
+[functions.notify-dispatch]
+verify_jwt = false

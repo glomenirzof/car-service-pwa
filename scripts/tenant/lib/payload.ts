@@ -2,7 +2,7 @@
 // app.publish_tenant(). Pure function: used by tenant:publish, the seed
 // generator and SQL tests.
 import {createHash} from 'node:crypto';
-import {WEEKDAYS, type BusinessConfig} from '../../../supabase/functions/_shared/tenant-config.ts';
+import {WEEKDAYS, type BusinessConfig} from '../../../supabase/functions/_shared/core/tenant-config.ts';
 
 export type PublishPayload = {
   tenant: {

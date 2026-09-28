@@ -1,7 +1,7 @@
 // Renders the per-tenant HTML shell from the shared Vite-built template.
 // One JS/CSS build serves every studio; only this HTML differs: title,
 // metadata, manifest, icons, startup images and the boot JSON.
-import type {BusinessConfig} from '../../../supabase/functions/_shared/tenant-config.ts';
+import type {BusinessConfig} from '../../../supabase/functions/_shared/core/tenant-config.ts';
 import {STARTUP_DEVICES, startupFile, startupMedia} from './devices.ts';
 
 export type ShellKind = 'client' | 'owner';

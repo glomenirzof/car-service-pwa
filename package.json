@@ -10,11 +10,11 @@
     "dev": "npm run tenant:assets && vite",
     "build": "tsc -b && vite build && tsx scripts/tenant/render-site.ts --out dist",
     "preview": "node scripts/serve-dist.mjs",
-    "typecheck": "tsc -b && tsc -p tsconfig.sw.json && deno check --config supabase/functions/deno.json supabase/functions/*/index.ts",
+    "typecheck": "tsc -b && tsc -p tsconfig.sw.json && deno check --config supabase/functions/deno.json supabase/functions/*/index.ts supabase/functions/tests/*.ts scripts/functions-dev-server.ts",
     "lint": "eslint .",
     "test": "vitest run --project unit",
     "test:sql": "vitest run --project sql",
-    "test:functions": "deno test --allow-net --allow-env --allow-read --config supabase/functions/deno.json supabase/functions/tests/",
+    "test:functions": "deno cache --config supabase/functions/deno.json supabase/functions/tests/*.ts && deno test --allow-all --unsafely-ignore-certificate-errors=127.0.0.1 --config supabase/functions/deno.json supabase/functions/tests/",
     "test:e2e": "playwright test",
     "test:all": "npm run test && npm run test:sql && npm run test:functions && npm run test:e2e",
     "db:local": "node scripts/db/local-pg.mjs start",
@@ -28,7 +28,7 @@
     "tenant:publish": "tsx scripts/tenant/publish.ts",
     "tenant:verify": "tsx scripts/tenant/verify.ts",
     "owner:invite": "tsx scripts/tenant/owner-invite.ts",
-    "functions:serve": "deno run --allow-net --allow-env --allow-read --config supabase/functions/deno.json scripts/functions-dev-server.ts",
+    "functions:serve": "deno run --allow-net --allow-env --allow-read --allow-sys --config supabase/functions/deno.json scripts/functions-dev-server.ts",
     "astryx": "node node_modules/@astryxdesign/cli/clients/cli/bin/astryx.mjs"
   },
   "dependencies": {

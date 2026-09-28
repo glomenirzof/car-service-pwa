@@ -2,7 +2,7 @@
 import sharp from 'sharp';
 import {join} from 'node:path';
 import {loadTenant, tenantDir, mediaImages} from './load.ts';
-import type {BusinessConfig} from '../../../supabase/functions/_shared/tenant-config.ts';
+import type {BusinessConfig} from '../../../supabase/functions/_shared/core/tenant-config.ts';
 
 export type Report = {slug: string; ok: boolean; errors: string[]; warnings: string[]; config?: BusinessConfig};
 

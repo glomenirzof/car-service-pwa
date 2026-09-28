@@ -1,6 +1,6 @@
 // Test fixtures for SQL/integration tests. Deliberately generic names: real
 // demo businesses live only in tenants/*/business.json and supabase/seed.sql.
-import {businessConfigSchema, type BusinessConfigInput} from '../../supabase/functions/_shared/tenant-config.ts';
+import {businessConfigSchema, type BusinessConfigInput} from '../../supabase/functions/_shared/core/tenant-config.ts';
 
 const allWeek = [['09:00', '21:00']] as [string, string][];
 
