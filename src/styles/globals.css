@@ -1,0 +1,25 @@
+/*
+ * Cascade layer order — declared once, before any import (astryx docs migration,
+ * "Cascade Layer Safety"):
+ *   reset       Astryx :where() reset (lowest)
+ *   theme       Tailwind theme variables
+ *   base        Tailwind preflight (layered, so it can never beat Astryx)
+ *   astryx-base Astryx component styles (shipped astryx.css)
+ *   astryx-theme Astryx theme tokens (shipped theme.css + runtime tenant theme)
+ *   components  app + shadcn component styles
+ *   utilities   Tailwind utilities (className overrides win intentionally)
+ * Tailwind utilities read Astryx tokens through @astryxdesign/core/tailwind-theme.css,
+ * so shadcn components and Astryx share one token set (see AGENTS.md).
+ */
+@layer reset, theme, base, astryx-base, astryx-theme, components, utilities;
+
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/preflight.css' layer(base);
+@import '@astryxdesign/core/reset.css';
+@import '@astryxdesign/core/astryx.css';
+@import '@astryxdesign/theme-neutral/theme.css';
+@import '@astryxdesign/core/tailwind-theme.css';
+@import 'tailwindcss/utilities.css' layer(utilities);
+@import './app.css' layer(components);
+
+@source '../';
