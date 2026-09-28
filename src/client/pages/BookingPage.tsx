@@ -13,7 +13,7 @@ import {Copy, Phone} from 'lucide-react';
 import {ScreenHeader} from '@/components/app/ScreenHeader';
 import {EmptyBlock, ErrorBlock, LoadingRows} from '@/components/app/StateViews';
 import {ApiError, errorMessage} from '@/shared/api';
-import {dateLong, duration, money, time, STATUS_LABEL} from '@/shared/format';
+import {dateLong, dayMonth, duration, money, time, STATUS_LABEL} from '@/shared/format';
 import {formatPhone} from '@shared/phone';
 import {useBoot} from '@/app/boot-context';
 import {useStudio} from '../studio-context';
@@ -90,7 +90,7 @@ export function BookingPage() {
               <Banner
                 status="info"
                 title="Изменить онлайн уже нельзя"
-                description={`Перенос и отмена доступны до ${time(b.changeDeadline, tz)}, ${dateLong(b.changeDeadline, tz)}. Позвоните в студию.`}
+                description={`Перенос и отмена онлайн были доступны до ${dayMonth(b.changeDeadline, tz)}, ${time(b.changeDeadline, tz)}. Позвоните в студию.`}
                 endContent={<Button label="Позвонить" size="sm" icon={<Phone size={14} />} href={`tel:${b.tenant.phone}`} />}
               />
             ) : null}
@@ -134,7 +134,7 @@ export function BookingPage() {
               token={token}
               onDone={(nb) => {
                 updateSavedBooking(slug, nb.id, {startAt: nb.startAt});
-                showToast({body: `Запись перенесена на ${dateLong(nb.startAt, tz)}, ${time(nb.startAt, tz)}`});
+                showToast({body: `Запись перенесена на ${dayMonth(nb.startAt, tz)}, ${time(nb.startAt, tz)}`});
                 navigate(-1);
               }}
             />

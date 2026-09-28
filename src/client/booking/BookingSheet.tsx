@@ -15,7 +15,7 @@ import {Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerTitle} from
 import {PhoneField} from '@/components/app/PhoneField';
 import {ErrorBlock} from '@/components/app/StateViews';
 import {ApiError} from '@/shared/api';
-import {dateLong, duration, money, time} from '@/shared/format';
+import {dateLong, dayMonth, duration, money, time} from '@/shared/format';
 import {formatPhone, normalizePhone} from '@shared/phone';
 import {localDate} from '@shared/periods';
 import type {ClientBooking, Service} from '@/shared/types';
@@ -286,7 +286,7 @@ function ConfirmSummary({service, startAt, contact, comment}: {service: Service;
       </MetadataListItem>
       <MetadataListItem label="Длительность">
         {duration(service.durationMinutes)}
-        {service.completion === 'multi_day' ? ` (до ${dateLong(end, studio.timezone)}, ~${time(end, studio.timezone)})` : ''}
+        {service.completion === 'multi_day' ? ` (до ${dayMonth(end, studio.timezone)}, ~${time(end, studio.timezone)})` : ''}
       </MetadataListItem>
       <MetadataListItem label="Стоимость">{money(service.price.amount, service.price.isFrom)}</MetadataListItem>
       <MetadataListItem label="Контакты">
@@ -319,7 +319,7 @@ function DoneStep({booking, token, subscriptions}: {booking: ClientBooking; toke
       </HStack>
       <Text>
         Ссылка на запись сохранена в разделе «Мои записи» на этом устройстве. Перенести или отменить запись онлайн можно до{' '}
-        {dateLong(booking.changeDeadline, studio.timezone)}, {time(booking.changeDeadline, studio.timezone)}.
+        {dayMonth(booking.changeDeadline, studio.timezone)}, {time(booking.changeDeadline, studio.timezone)}.
       </Text>
       <ReminderOptIn slug={slug} token={token} booking={booking} subscriptions={subscriptions} isPreview={studio.status === 'preview'} />
     </VStack>

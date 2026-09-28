@@ -80,6 +80,9 @@ export default async function globalSetup() {
         AUTH_JWT_ISSUER: JWT_ISSUER,
         CRON_SECRET: state.cronSecret,
         ALLOWED_ORIGINS: SITE_URL,
+        // All browser requests share one local IP; limits themselves are covered by
+        // the SQL and function tests, so reads get room for a whole test run.
+        RL_PUBLIC_READ_PER_MIN: '1000',
         // Deliberately no LLM_* and no VAPID_*: the tests check that booking
         // works without AI and that the UI is honest about push not being set up.
       },

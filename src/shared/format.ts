@@ -36,6 +36,11 @@ export function dateLong(iso: string, tz: string): string {
   return new Intl.DateTimeFormat('ru-RU', {timeZone: tz, weekday: 'long', day: 'numeric', month: 'long'}).format(new Date(iso));
 }
 
+/** "6 октября" — for phrases like "до 6 октября" where a weekday would not decline. */
+export function dayMonth(iso: string, tz: string): string {
+  return new Intl.DateTimeFormat('ru-RU', {timeZone: tz, day: 'numeric', month: 'long'}).format(new Date(iso));
+}
+
 export function dateShort(iso: string, tz: string): string {
   return new Intl.DateTimeFormat('ru-RU', {timeZone: tz, weekday: 'short', day: 'numeric', month: 'short'}).format(new Date(iso));
 }
