@@ -1,0 +1,128 @@
+{
+  "$schema": "../../schemas/business.schema.json",
+  "schemaVersion": 1,
+  "slug": "rotorlab",
+  "name": "RotorLab Автосервис",
+  "shortName": "RotorLab",
+  "tagline": "Слесарный ремонт, ТО и шиномонтаж без очередей",
+  "description": "Два подъёмника, стенд развал-схождения и шиномонтажный пост. Показываем найденные неисправности на фото и согласуем работы до начала ремонта.",
+  "locale": "ru-RU",
+  "currency": "RUB",
+  "timezone": "Asia/Yekaterinburg",
+  "contacts": {
+    "phone": "+73430000000",
+    "address": "пр. Тестовый, 42",
+    "city": "Екатеринбург"
+  },
+  "brand": {
+    "accent": "#FF7A1A",
+    "background": "#110D0A",
+    "logo": "images/logo.svg",
+    "icon": "images/icon.png",
+    "hero": "images/hero.jpg"
+  },
+  "gallery": [
+    {"file": "images/gallery-1.jpg", "alt": "Автомобиль на подъёмнике"},
+    {"file": "images/detail-3.jpg", "alt": "Колесо на балансировке"},
+    {"file": "images/gallery-2.jpg", "alt": "Рабочая зона сервиса"}
+  ],
+  "booking": {
+    "slotStepMinutes": 30,
+    "minLeadMinutes": 60,
+    "horizonDays": 21,
+    "clientChangeUntilHours": 3,
+    "reminderMinutesBefore": [180]
+  },
+  "workingHours": {
+    "mon": [["08:00", "20:00"]],
+    "tue": [["08:00", "20:00"]],
+    "wed": [["08:00", "20:00"]],
+    "thu": [["08:00", "20:00"]],
+    "fri": [["08:00", "20:00"]],
+    "sat": [["09:00", "17:00"]],
+    "sun": []
+  },
+  "exceptions": [
+    {"date": "2026-11-04", "hours": [], "note": "День народного единства"}
+  ],
+  "resources": [
+    {"key": "lift-1", "name": "Подъёмник 1", "kind": "lift", "capabilities": ["lift", "tires"]},
+    {"key": "lift-2", "name": "Подъёмник 2", "kind": "lift", "capabilities": ["lift"]},
+    {"key": "alignment", "name": "Стенд сход-развала", "kind": "bay", "capabilities": ["alignment"]},
+    {"key": "tire-bay", "name": "Шиномонтажный пост", "kind": "bay", "capabilities": ["tires"]}
+  ],
+  "services": [
+    {
+      "key": "diagnostics",
+      "name": "Компьютерная диагностика",
+      "category": "Диагностика",
+      "description": "Чтение ошибок всех блоков, проверка ходовой на подъёмнике, отчёт с фото.",
+      "durationMinutes": 60,
+      "bufferMinutes": 10,
+      "capability": "lift",
+      "price": {"amount": 2000, "from": false},
+      "popular": true,
+      "image": "images/gallery-1.jpg"
+    },
+    {
+      "key": "oil-change",
+      "name": "Замена масла и фильтров",
+      "category": "ТО",
+      "description": "Замена моторного масла, масляного и воздушного фильтров. Масло клиента или наше.",
+      "durationMinutes": 45,
+      "bufferMinutes": 15,
+      "capability": "lift",
+      "price": {"amount": 1500, "from": true},
+      "popular": true
+    },
+    {
+      "key": "service-plan",
+      "name": "ТО по регламенту",
+      "category": "ТО",
+      "description": "Регламентное обслуживание по сервисной книжке с сохранением гарантии.",
+      "durationMinutes": 180,
+      "bufferMinutes": 20,
+      "capability": "lift",
+      "price": {"amount": 6500, "from": true}
+    },
+    {
+      "key": "suspension",
+      "name": "Ремонт подвески",
+      "category": "Ремонт",
+      "description": "Замена рычагов, сайлентблоков, амортизаторов. Автомобиль остаётся на подъёмнике до окончания работ.",
+      "durationMinutes": 1440,
+      "bufferMinutes": 60,
+      "completion": "multi_day",
+      "capability": "lift",
+      "price": {"amount": 8000, "from": true}
+    },
+    {
+      "key": "tire-change",
+      "name": "Сезонный шиномонтаж",
+      "category": "Шины",
+      "description": "Снятие, монтаж и балансировка четырёх колёс до R18.",
+      "durationMinutes": 40,
+      "bufferMinutes": 5,
+      "capability": "tires",
+      "price": {"amount": 2400, "from": false},
+      "image": "images/detail-3.jpg",
+      "popular": true
+    },
+    {
+      "key": "alignment",
+      "name": "Развал-схождение",
+      "category": "Шины",
+      "description": "3D-стенд, регулировка углов установки колёс, распечатка до и после.",
+      "durationMinutes": 60,
+      "bufferMinutes": 10,
+      "capability": "alignment",
+      "price": {"amount": 2900, "from": false}
+    }
+  ],
+  "ai": {
+    "enabled": true,
+    "assistantName": "Мастер-приёмщик",
+    "greeting": "Опишите, что беспокоит в машине, — подберу работу и время."
+  },
+  "legal": {}
+}

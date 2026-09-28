@@ -168,6 +168,9 @@ begin
   if p_key is null then
     raise exception 'invalid_input' using detail = 'idempotency key is required';
   end if;
+  if p_request_hash is null then
+    raise exception 'invalid_input' using detail = 'request fingerprint is missing';
+  end if;
   insert into app.request_ledger (tenant_id, operation, idempotency_key, request_hash)
   values (p_tenant, p_operation, p_key, p_request_hash)
   on conflict do nothing;
@@ -590,6 +593,12 @@ declare
   v_payment app.payments;
   v_response jsonb;
 begin
+  if p_amount is null or p_amount <= 0 then
+    raise exception 'invalid_input' using detail = 'amount';
+  end if;
+  if p_method is null or p_method not in ('cash', 'card', 'transfer', 'other') then
+    raise exception 'invalid_input' using detail = 'method';
+  end if;
   v_replay := app.ledger_claim(p_tenant, 'payment', p_idempotency_key,
     p_booking::text || ':' || p_amount::text || ':' || p_method);
   if v_replay is not null then
@@ -601,12 +610,6 @@ begin
   end if;
   if v_booking.status = 'cancelled' then
     raise exception 'invalid_state' using detail = 'cancelled';
-  end if;
-  if p_amount is null or p_amount <= 0 then
-    raise exception 'invalid_input' using detail = 'amount';
-  end if;
-  if p_method not in ('cash', 'card', 'transfer', 'other') then
-    raise exception 'invalid_input' using detail = 'method';
   end if;
 
   insert into app.payments (tenant_id, booking_id, amount, method, received_at, note, recorded_by, is_demo)

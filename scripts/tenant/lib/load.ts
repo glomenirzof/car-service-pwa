@@ -3,7 +3,8 @@ import {resolve, join} from 'node:path';
 import {businessConfigSchema, formatConfigIssues, type BusinessConfig} from '../../../supabase/functions/_shared/tenant-config.ts';
 
 export const ROOT = resolve(import.meta.dirname, '../../..');
-export const TENANTS_DIR = resolve(ROOT, 'tenants');
+// TENANTS_DIR can be overridden for isolated pipeline tests.
+export const TENANTS_DIR = process.env.TENANTS_DIR ? resolve(process.env.TENANTS_DIR) : resolve(ROOT, 'tenants');
 
 export function tenantDir(slug: string) {
   return join(TENANTS_DIR, slug);
