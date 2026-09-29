@@ -16,6 +16,20 @@ assistant, notify-dispatch  ◄──── fetch ──── браузер (P
 
 Все переменные окружения с пояснениями перечислены в [`.env.example`](.env.example).
 
+## 0. Короткий путь
+
+- **Посмотреть локально одной командой:** `npm run demo`. Поднимает встроенный PostgreSQL 17
+  (`embedded-postgres`, данные в `.tmp/demo/pg`), применяет миграции и seed, запускает функции
+  (Deno из npm) и Vite, открывает браузер. Кабинет открывается без пароля по ссылке
+  `/__demo/owner/<slug>`: это middleware dev-сервера, в сборку он не попадает, работает только
+  с локальной базой. Секреты случайные на каждый запуск и на диск не пишутся.
+- **Запуск в интернете без ручной настройки:** один файл `settings.env` (шаблон
+  `settings.example.env`) и команды `cloud:prepare` (секреты и VAPID, миграции, Vault, cron,
+  публикация студий, проверка Auth), `cloud:login`, `cloud:functions` (секреты функций и деплой,
+  Supabase CLI с `--use-api`, без Docker), `cloud:site` (сборка и Cloudflare Pages через wrangler),
+  `cloud:owner`, `cloud:live`, `cloud:check`. Пошагово: [START.md](START.md), часть Б.
+  Разделы ниже описывают то же вручную.
+
 ## 1. Требования
 
 - Node.js ≥ 22.13 и npm (Deno ставится как npm-зависимость, `node_modules/.bin/deno`).

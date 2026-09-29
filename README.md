@@ -31,16 +31,21 @@ tests/sql, e2e             интеграционные тесты на PostgreS
 
 ## Быстрый старт
 
+**Не разработчик? Начните с [START.md](START.md)** — пошагово: посмотреть на компьютере и
+запустить в интернете.
+
 ```bash
-npm ci
-npm run db:local && npm run db:reset     # PostgreSQL :54322 + миграции + две демо-студии
-# supabase/functions/.env и .env.local — см. SETUP.md §2.1
-npm run functions:serve                  # терминал 1
-npm run dev                              # терминал 2 → http://127.0.0.1:5173/s/graphite/
+npm install
+npm run demo        # всё сразу: встроенный PostgreSQL, функции, сайт; откроется браузер
 ```
+
+Запуск в интернете — `npm run cloud:prepare`, `cloud:login`, `cloud:functions`, `cloud:site`,
+`cloud:owner` с одним файлом настроек `settings.env` (START.md, часть Б). Ручная настройка для
+разработчиков — [SETUP.md](SETUP.md).
 
 ## Документы
 
+- [START.md](START.md) — запуск для не-разработчика: демо на компьютере и запуск в интернете.
 - [SETUP.md](SETUP.md) — локальный запуск, Supabase (секреты, Auth, Cron), Cloudflare Pages.
 - [CLONE-IN-6-MINUTES.md](CLONE-IN-6-MINUTES.md) — как запустить новую студию.
 - [ACCEPTANCE.md](ACCEPTANCE.md) — что проверено, чем, и что зависит от внешних сервисов.

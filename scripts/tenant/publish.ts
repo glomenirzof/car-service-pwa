@@ -9,6 +9,10 @@ import {checkTenant, printReport} from './lib/checks.ts';
 import {imageMeta} from './lib/assets.ts';
 import {buildPublishPayload, configHash} from './lib/payload.ts';
 import {connect} from './lib/db.ts';
+import {publishTenant} from './lib/publish.ts';
+import {loadSettings} from '../lib/settings.ts';
+
+loadSettings();
 
 const {values, positionals} = parseArgs({
   allowPositionals: true,
@@ -20,26 +24,23 @@ if (!slug) {
   process.exit(2);
 }
 
-const report = await checkTenant(slug);
-printReport(report);
-if (!report.ok || !report.config) process.exit(1);
-const cfg = report.config;
-const payload = buildPublishPayload(cfg, await imageMeta(cfg));
-const hash = configHash(cfg);
-
 if (values['dry-run']) {
-  console.log(JSON.stringify({hash, services: payload.services.length, resources: payload.resources.length, media: payload.media.length}, null, 2));
+  const report = await checkTenant(slug);
+  printReport(report);
+  if (!report.ok || !report.config) process.exit(1);
+  const payload = buildPublishPayload(report.config, await imageMeta(report.config));
+  console.log(JSON.stringify({hash: configHash(report.config), services: payload.services.length, resources: payload.resources.length, media: payload.media.length}, null, 2));
   process.exit(0);
 }
 
 const sql = connect();
 try {
-  const [row] = await sql`select app.publish_tenant(${sql.json(payload as never)}, ${hash}) as r`;
-  const r = row!.r as Record<string, unknown>;
+  const r = await publishTenant(sql, slug);
+  if (!r) process.exit(1);
   console.log(`Опубликовано: ${slug} (версия ${r.configVersion}, статус ${r.status}${r.created ? ', новая студия' : ''})`);
   console.log(`  услуги: ${JSON.stringify(r.services)}; ресурсы: ${JSON.stringify(r.resources)}`);
   console.log(`  сохранено: ${JSON.stringify(r.preserved)}`);
-  for (const w of (r.warnings as string[]) ?? []) console.log(`  внимание: ${w}`);
+  for (const w of r.warnings ?? []) console.log(`  внимание: ${w}`);
 
   if (values.live) {
     const [rd] = await sql`select app.tenant_readiness(${slug}) as r`;

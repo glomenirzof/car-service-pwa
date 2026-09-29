@@ -5,6 +5,7 @@ import {readFileSync, existsSync, statSync} from 'node:fs';
 import {join, resolve, extname} from 'node:path';
 import {loadTenant} from '../tenant/lib/load.ts';
 import {renderShell} from '../tenant/lib/shell.ts';
+import {localOwnerSession} from '../dev-owner-session.ts';
 
 const TYPES: Record<string, string> = {
   '.png': 'image/png',
@@ -22,6 +23,32 @@ export function tenantDevPlugin(generatedDir: string): Plugin {
     configureServer(server: ViteDevServer) {
       server.middlewares.use(async (req, res, next) => {
         const url = new URL(req.url ?? '/', 'http://localhost');
+        // `npm run demo` only: one-click owner login against the local demo
+        // database (no Supabase Auth locally). Never part of a build.
+        const demo = url.pathname.match(/^\/__demo\/owner\/([a-z0-9-]+)\/?$/);
+        if (demo) {
+          const databaseUrl = process.env.DEMO_OWNER_DATABASE_URL;
+          const secret = process.env.DEMO_OWNER_JWT_SECRET;
+          const issuer = process.env.DEMO_OWNER_JWT_ISSUER;
+          if (!databaseUrl || !secret || !issuer) return next();
+          const slug = demo[1]!;
+          if (!loadTenant(slug).ok) {
+            res.statusCode = 404;
+            res.end(`Unknown tenant ${slug}`);
+            return;
+          }
+          try {
+            const s = await localOwnerSession({databaseUrl, secret, issuer, slug, email: `owner@${slug}.demo`});
+            const script = `localStorage.setItem(${JSON.stringify(s.storageKey)}, ${JSON.stringify(JSON.stringify(s.session))});location.replace(${JSON.stringify(`/s/${slug}/owner/`)});`;
+            res.setHeader('Content-Type', 'text/html; charset=utf-8');
+            res.setHeader('Cache-Control', 'no-store');
+            res.end(`<!doctype html><meta charset="utf-8"><title>Вход в демо-кабинет</title><script>${script.replace(/</g, '\\u003c')}</script>`);
+          } catch (error) {
+            res.statusCode = 500;
+            res.end(`demo owner login failed: ${(error as Error).message}`);
+          }
+          return;
+        }
         const asset = url.pathname.match(/^\/t\/([a-z0-9-]+)\/(.+)$/);
         if (asset) {
           const file = join(generatedDir, 't', asset[1]!, asset[2]!);

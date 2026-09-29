@@ -15,6 +15,9 @@ import {configHash} from './lib/payload.ts';
 import {ROOT} from './lib/load.ts';
 import {STARTUP_DEVICES, startupFile} from './lib/devices.ts';
 import {connect} from './lib/db.ts';
+import {loadSettings} from '../lib/settings.ts';
+
+loadSettings();
 
 const {values, positionals} = parseArgs({
   allowPositionals: true,

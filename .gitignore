@@ -14,3 +14,4 @@ test-results/
 supabase/.branches/
 supabase/.temp/
 .deno/
+settings.env

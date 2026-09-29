@@ -3,13 +3,11 @@
 // On plain PostgreSQL (no Supabase schemas) it first applies the Supabase shim.
 // Usage: node scripts/db/migrate.mjs [--reset] [--seed]
 import postgres from 'postgres';
-import {readdirSync, readFileSync, existsSync} from 'node:fs';
+import {readdirSync, readFileSync, existsSync, realpathSync} from 'node:fs';
+import {pathToFileURL} from 'node:url';
 import {resolve} from 'node:path';
 
 const root = resolve(import.meta.dirname, '../..');
-const url = process.env.DATABASE_URL ?? 'postgres://postgres:postgres@127.0.0.1:54322/postgres';
-const reset = process.argv.includes('--reset');
-const seed = process.argv.includes('--seed');
 
 export async function applyMigrations(sql, {log = console.log} = {}) {
   const hasAuth = await sql`select 1 from pg_namespace where nspname = 'auth'`;
@@ -35,7 +33,18 @@ export async function applyMigrations(sql, {log = console.log} = {}) {
   }
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (process.argv[1] && import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href) {
+  for (const file of ['settings.env', '.env']) {
+    if (existsSync(resolve(root, file))) process.loadEnvFile(resolve(root, file));
+  }
+  const url = process.env.DATABASE_URL ?? 'postgres://postgres:postgres@127.0.0.1:54322/postgres';
+  const reset = process.argv.includes('--reset');
+  const seed = process.argv.includes('--seed');
+  const host = new URL(url).hostname;
+  if ((reset || seed) && !['127.0.0.1', 'localhost', '::1', '[::1]'].includes(host)) {
+    console.error(`--reset/--seed стирают данные и добавляют демо — только для локальной базы, а DATABASE_URL указывает на ${host}.`);
+    process.exit(2);
+  }
   const sql = postgres(url, {onnotice: () => {}, max: 1});
   try {
     if (reset) {

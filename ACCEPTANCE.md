@@ -24,7 +24,7 @@
 |---|---|---|
 | Линт | `npm run lint` | 0 ошибок |
 | Типы (app, node, service worker, Deno) | `npm run typecheck` | 0 ошибок |
-| Unit (jsdom) | `npm run test` | 45 из 45 |
+| Unit (jsdom) | `npm run test` | 47 из 47 |
 | SQL / интеграция на PostgreSQL | `npm run test:sql` | 57 из 57 |
 | Edge Functions (Deno, реальная БД) | `npm run test:functions` | 31 из 31 |
 | Браузер E2E (Playwright, Chromium, Pixel 7) | `npm run test:e2e` | 19 из 19 |
@@ -143,7 +143,35 @@ vite-plugin-pwa 1.3 / Workbox 7.4, Vitest 5, Playwright 1.63, Deno 2.9. Всё �
   `test:functions` сначала делает `deno cache`, затем запускает тесты с этим флагом только
   для локального фейкового push-сервера.
 
-## 7. Известные ограничения
+## 7. Запуск для не-разработчика (`npm run demo`, `cloud:*`)
+
+Проверено в этой среде (Linux):
+
+- `npm run demo` с нуля и повторно: встроенный PostgreSQL 17 с локалью `builtin C.UTF-8`
+  (`lower('ИВАН Ёж')` → `иван ёж`, поиск по кириллице без учёта регистра работает),
+  миграции и seed, функции, сайт. Через браузер: запись клиента → запись в кабинете, вход по
+  `/__demo/owner/<slug>`, поиск. Остановка по сигналу гасит базу, Deno и Vite, порты свободны.
+- `cloud:prepare` на локальной базе с фиктивным адресом Supabase: понятные сообщения о
+  незаполненных и неверных строках `settings.env`; ключи создаются один раз и при повторе
+  сохраняются; миграции и публикация студий проходят; Vault, cron и проверки Auth локально
+  недоступны и выдаются как предупреждения. VAPID-ключи принимает библиотека `web-push`
+  (плюс unit-тест пары ключей).
+- `cloud:site`: сборка с ключами из `settings.env` (адрес Supabase попадает и в бандл, и в CSP);
+  без входа в Cloudflare — подсказка выполнить `cloud:login`.
+- `cloud:functions` без входа в Supabase: подсказка про `cloud:login`, временный файл с секретами
+  удаляется и при ошибке.
+- `cloud:owner` и `cloud:live`: вопросы (в том числе при вставке всех ответов разом), отказ `live`
+  без владельца, успешное включение и повтор. Флаги CLI проверены по `--help`
+  (Supabase CLI 2.118.0: `secrets set --env-file`, `functions deploy --use-api`;
+  wrangler 4.143.0: `pages project create --production-branch`, `pages deploy --branch --commit-dirty`).
+
+Не проверено: всё, что требует настоящих аккаунтов (вход CLI, `secrets set`, деплой функций и сайта,
+Vault и cron на hosted Supabase, Admin API для владельца), а также запуск на macOS и Windows.
+Для Windows учтено: npm/npx запускаются через Node без оболочки (пробелы и кириллица в пути),
+проверка «скрипт запущен напрямую» через `pathToFileURL`, вопросы вместо флагов после `--`
+(PowerShell их теряет), в инструкции — `cmd` вместо PowerShell.
+
+## 8. Известные ограничения
 
 - Один service worker на студию обслуживает и клиентское приложение, и кабинет, поэтому
   у них общая браузерная push-подписка; на сервере это разные строки (`audience` =

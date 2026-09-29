@@ -10,6 +10,7 @@ import {join} from 'node:path';
 import {listTenantSlugs, loadTenantOrThrow, ROOT} from './lib/load.ts';
 import {imageMeta} from './lib/assets.ts';
 import {buildPublishPayload, configHash} from './lib/payload.ts';
+import {isMain} from '../lib/is-main.ts';
 
 const DEMO_CLIENTS = [
   ['Алексей (демо)', '+70000000101', 'Toyota Camry', 'А101АА'],
@@ -73,7 +74,7 @@ select app.record_payment(tenant_id, id, amount, ${i ? "'card'" : "'cash'"}, now
   return parts.join('\n') + '\n';
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (isMain(import.meta.url)) {
   const sql = await generateSeed();
   writeFileSync(join(ROOT, 'supabase', 'seed.sql'), sql);
   console.log(`supabase/seed.sql: ${sql.length} bytes`);

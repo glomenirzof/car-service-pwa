@@ -9,6 +9,7 @@ import {parseArgs} from 'node:util';
 import {randomUUID} from 'node:crypto';
 import {SignJWT} from 'jose';
 import postgres from 'postgres';
+import {isMain} from './lib/is-main.ts';
 
 export async function localOwnerSession(opts: {databaseUrl: string; secret: string; issuer: string; slug: string; email: string}) {
   const sql = postgres(opts.databaseUrl, {max: 1, onnotice: () => {}});
@@ -46,7 +47,7 @@ export async function localOwnerSession(opts: {databaseUrl: string; secret: stri
   }
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (isMain(import.meta.url)) {
   const {values} = parseArgs({options: {slug: {type: 'string', default: 'graphite'}, email: {type: 'string', default: 'owner@local.test'}}});
   const r = await localOwnerSession({
     databaseUrl: process.env.DATABASE_URL ?? process.env.SUPABASE_DB_URL ?? 'postgres://postgres:postgres@127.0.0.1:54322/postgres',
