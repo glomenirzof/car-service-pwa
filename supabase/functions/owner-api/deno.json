@@ -1,0 +1,17 @@
+{
+  "imports": {
+    "zod": "npm:zod@4.6.5",
+    "postgres": "npm:postgres@3.4.9",
+    "jose": "npm:jose@6.2.12",
+    "web-push": "npm:web-push@3.6.7",
+    "http_ece": "npm:http_ece@1.2.1",
+    "@supabase/supabase-js": "npm:@supabase/supabase-js@2.117.2",
+    "@std/assert": "jsr:@std/assert@1"
+  },
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitOverride": true,
+    "noUncheckedIndexedAccess": true
+  },
+  "nodeModulesDir": "none"
+}

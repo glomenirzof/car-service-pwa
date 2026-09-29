@@ -1,0 +1,74 @@
+{
+  "$schema": "../../schemas/business.schema.json",
+  "schemaVersion": 1,
+  "slug": "template",
+  "name": "Новая студия",
+  "shortName": "Студия",
+  "tagline": "Замените на короткое описание студии",
+  "description": "Замените описание: чем занимаетесь, чем отличаетесь, как проходит визит.",
+  "locale": "ru-RU",
+  "currency": "RUB",
+  "timezone": "Europe/Moscow",
+  "contacts": {
+    "phone": "+70000000000",
+    "address": "Улица, дом",
+    "city": "Город"
+  },
+  "brand": {
+    "accent": "#7CC4FF",
+    "background": "#0B0C0E",
+    "logo": "images/logo.svg",
+    "icon": "images/icon.png",
+    "hero": "images/hero.jpg"
+  },
+  "gallery": [
+    {"file": "images/gallery-1.jpg", "alt": "Замените подпись к фото"},
+    {"file": "images/detail-1.jpg", "alt": "Замените подпись к фото"}
+  ],
+  "booking": {
+    "slotStepMinutes": 30,
+    "minLeadMinutes": 60,
+    "horizonDays": 30,
+    "clientChangeUntilHours": 12,
+    "reminderMinutesBefore": [1440, 120]
+  },
+  "workingHours": {
+    "mon": [["09:00", "20:00"]],
+    "tue": [["09:00", "20:00"]],
+    "wed": [["09:00", "20:00"]],
+    "thu": [["09:00", "20:00"]],
+    "fri": [["09:00", "20:00"]],
+    "sat": [["10:00", "18:00"]],
+    "sun": []
+  },
+  "exceptions": [],
+  "resources": [
+    {"key": "post-1", "name": "Пост 1", "kind": "box", "capabilities": ["wash"]},
+    {"key": "post-2", "name": "Пост 2", "kind": "box", "capabilities": ["wash", "detailing"]}
+  ],
+  "services": [
+    {
+      "key": "wash",
+      "name": "Мойка",
+      "category": "Мойка",
+      "description": "Замените описание услуги.",
+      "durationMinutes": 60,
+      "bufferMinutes": 10,
+      "capability": "wash",
+      "price": {"amount": 2000, "from": false},
+      "popular": true
+    },
+    {
+      "key": "detailing",
+      "name": "Детейлинг",
+      "category": "Уход",
+      "description": "Замените описание услуги.",
+      "durationMinutes": 240,
+      "bufferMinutes": 30,
+      "capability": "detailing",
+      "price": {"amount": 12000, "from": true}
+    }
+  ],
+  "ai": {"enabled": true, "assistantName": "Ассистент", "greeting": "Подскажу по услугам и свободному времени."},
+  "legal": {}
+}

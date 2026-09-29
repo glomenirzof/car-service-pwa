@@ -1,0 +1,55 @@
+{
+  "id": "/s/graphite/",
+  "name": "GRAPHITE Detailing",
+  "short_name": "GRAPHITE",
+  "description": "Детейлинг-студия: мойка, полировка, керамика и плёнка",
+  "lang": "ru",
+  "dir": "ltr",
+  "start_url": "/s/graphite/?source=pwa",
+  "scope": "/s/graphite/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0B0C0E",
+  "theme_color": "#0B0C0E",
+  "categories": [
+    "auto",
+    "lifestyle",
+    "business"
+  ],
+  "icons": [
+    {
+      "src": "/t/graphite/icons/icon-192.png?v=60a5f7642414",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/t/graphite/icons/icon-512.png?v=60a5f7642414",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/t/graphite/icons/maskable-192.png?v=60a5f7642414",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/t/graphite/icons/maskable-512.png?v=60a5f7642414",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Записаться",
+      "url": "/s/graphite/services"
+    },
+    {
+      "name": "Мои записи",
+      "url": "/s/graphite/bookings"
+    }
+  ]
+}

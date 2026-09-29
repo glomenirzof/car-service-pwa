@@ -1,0 +1,150 @@
+{
+  "$schema": "../../schemas/business.schema.json",
+  "schemaVersion": 1,
+  "slug": "graphite",
+  "name": "GRAPHITE Detailing",
+  "shortName": "GRAPHITE",
+  "tagline": "Детейлинг-студия: мойка, полировка, керамика и плёнка",
+  "description": "Работаем в закрытых боксах с дневным светом. Делаем детейлинг-мойку, химчистку, полировку, керамические покрытия и оклейку полиуретановой плёнкой. Автомобиль на многодневных работах остаётся в боксе под охраной.",
+  "locale": "ru-RU",
+  "currency": "RUB",
+  "timezone": "Europe/Moscow",
+  "contacts": {
+    "phone": "+74950000000",
+    "address": "ул. Демонстрационная, 1, бокс 3",
+    "city": "Москва",
+    "telegram": "graphite_demo"
+  },
+  "brand": {
+    "accent": "#C6F24E",
+    "background": "#0B0C0E",
+    "logo": "images/logo.svg",
+    "icon": "images/icon.png",
+    "hero": "images/hero.jpg"
+  },
+  "gallery": [
+    {"file": "images/gallery-1.jpg", "alt": "Седан в детейлинг-боксе под линейным светом"},
+    {"file": "images/detail-1.jpg", "alt": "Капли воды на керамическом покрытии"},
+    {"file": "images/detail-2.jpg", "alt": "Отражения на отполированном кузове"},
+    {"file": "images/detail-3.jpg", "alt": "Колёсный диск после мойки"},
+    {"file": "images/gallery-3.jpg", "alt": "Автомобиль после полировки"}
+  ],
+  "booking": {
+    "slotStepMinutes": 30,
+    "minLeadMinutes": 120,
+    "horizonDays": 45,
+    "clientChangeUntilHours": 12,
+    "reminderMinutesBefore": [1440, 120]
+  },
+  "workingHours": {
+    "mon": [["09:00", "21:00"]],
+    "tue": [["09:00", "21:00"]],
+    "wed": [["09:00", "21:00"]],
+    "thu": [["09:00", "21:00"]],
+    "fri": [["09:00", "21:00"]],
+    "sat": [["10:00", "20:00"]],
+    "sun": [["10:00", "18:00"]]
+  },
+  "exceptions": [
+    {"date": "2026-12-31", "hours": [["10:00", "16:00"]], "note": "Предновогодний день"},
+    {"date": "2027-01-01", "hours": [], "note": "Новый год"},
+    {"date": "2027-01-02", "hours": [], "note": "Новогодние каникулы"}
+  ],
+  "resources": [
+    {"key": "wash-bay", "name": "Моечный бокс", "kind": "wash", "capabilities": ["wash"]},
+    {"key": "detail-1", "name": "Детейлинг-бокс 1", "kind": "box", "capabilities": ["wash", "interior", "polish", "coating"]},
+    {"key": "detail-2", "name": "Детейлинг-бокс 2", "kind": "box", "capabilities": ["interior", "polish", "coating", "ppf"]}
+  ],
+  "services": [
+    {
+      "key": "complex-wash",
+      "name": "Комплексная мойка",
+      "category": "Мойка",
+      "description": "Двухфазная мойка кузова, арок и дисков, пылесос и влажная уборка салона, чернение шин.",
+      "durationMinutes": 90,
+      "bufferMinutes": 15,
+      "capability": "wash",
+      "price": {"amount": 3500, "from": false},
+      "image": "images/gallery-2.jpg",
+      "popular": true
+    },
+    {
+      "key": "detail-wash",
+      "name": "Детейлинг-мойка с защитой",
+      "category": "Мойка",
+      "description": "Безопасная ручная мойка, очистка битума и металлических вкраплений, быстрый силант на 2 месяца.",
+      "durationMinutes": 150,
+      "bufferMinutes": 15,
+      "capability": "wash",
+      "price": {"amount": 6900, "from": false},
+      "image": "images/detail-1.jpg",
+      "popular": false
+    },
+    {
+      "key": "rain-repellent",
+      "name": "Антидождь на стёкла",
+      "category": "Мойка",
+      "description": "Очистка и нанесение гидрофобного покрытия на лобовое и боковые стёкла.",
+      "durationMinutes": 45,
+      "bufferMinutes": 0,
+      "capability": "wash",
+      "price": {"amount": 2500, "from": false}
+    },
+    {
+      "key": "interior-clean",
+      "name": "Химчистка салона",
+      "category": "Салон",
+      "description": "Глубокая чистка сидений, потолка, ковров и пластика, обработка кожи, озонирование.",
+      "durationMinutes": 300,
+      "bufferMinutes": 30,
+      "capability": "interior",
+      "price": {"amount": 14000, "from": true},
+      "image": "images/gallery-4.jpg"
+    },
+    {
+      "key": "polish",
+      "name": "Восстановительная полировка",
+      "category": "Кузов",
+      "description": "Замер ЛКП, абразивная полировка в два-три этапа, удаление голограмм и царапин.",
+      "durationMinutes": 480,
+      "bufferMinutes": 60,
+      "capability": "polish",
+      "price": {"amount": 25000, "from": true},
+      "image": "images/detail-2.jpg",
+      "popular": true
+    },
+    {
+      "key": "ceramic",
+      "name": "Керамическое покрытие",
+      "category": "Защита",
+      "description": "Подготовительная полировка и два слоя керамики. Автомобиль остаётся в боксе на полимеризацию.",
+      "durationMinutes": 2880,
+      "bufferMinutes": 120,
+      "completion": "multi_day",
+      "capability": "coating",
+      "price": {"amount": 45000, "from": true},
+      "image": "images/detail-1.jpg",
+      "popular": true
+    },
+    {
+      "key": "ppf-front",
+      "name": "Плёнка PPF: передняя часть",
+      "category": "Защита",
+      "description": "Полиуретановая плёнка на капот, бампер, фары, крылья и зеркала. 4 дня в чистом боксе.",
+      "durationMinutes": 5760,
+      "bufferMinutes": 180,
+      "completion": "multi_day",
+      "capability": "ppf",
+      "price": {"amount": 120000, "from": true},
+      "image": "images/detail-4.jpg"
+    }
+  ],
+  "ai": {
+    "enabled": true,
+    "assistantName": "Ассистент GRAPHITE",
+    "greeting": "Подскажу, какая услуга нужна, и найду свободное время."
+  },
+  "legal": {
+    "privacyNote": "Имя и телефон нужны только для связи по записи."
+  }
+}
