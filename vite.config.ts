@@ -36,7 +36,8 @@ export default defineConfig({
   ],
   build: {
     target: 'es2022',
-    sourcemap: true,
+    // Maps are not deployed by default; BUILD_SOURCEMAP=1 emits hidden ones for an error tracker.
+    sourcemap: process.env.BUILD_SOURCEMAP === '1' ? 'hidden' : false,
     rolldownOptions: {
       input: {
         client: resolve(import.meta.dirname, 'shell/client.html'),

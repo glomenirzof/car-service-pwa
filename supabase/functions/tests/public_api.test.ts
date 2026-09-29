@@ -5,12 +5,13 @@ import {database, localDate, localMoment, publish, request, test} from './helper
 const fx = publish({slug: 'pub-alpha'});
 const TZ = 'Europe/Moscow';
 
-async function book(body: Record<string, unknown>, ip = `198.51.100.${Math.floor(Math.random() * 250)}`) {
+async function book(body: Record<string, unknown>, ip = `198.51.100.${Math.floor(Math.random() * 250)}`, headers?: HeadersInit) {
   const f = await fx;
   return handler(
     request('public-api', '/tenant/pub-alpha/bookings', {
       method: 'POST',
       ip,
+      headers,
       json: {serviceId: f.service.wash, name: 'Иван', phone: '8 999 123-45-67', consent: true, idempotencyKey: crypto.randomUUID(), ...body},
     }),
   );
@@ -113,5 +114,28 @@ test('booking creation is rate limited per client by a shared DB counter', async
     assert(res.headers.get('retry-after'));
   } finally {
     Deno.env.delete('RL_BOOKINGS_PER_10MIN');
+  }
+});
+
+test('without a trusted client IP header per-client limits are skipped, not shared by everyone', async () => {
+  Deno.env.set('RL_BOOKINGS_PER_10MIN', '1');
+  // Only cf-connecting-ip is trusted here: the x-forwarded-for the helper sends is ignored.
+  Deno.env.set('CLIENT_IP_HEADERS', 'cf-connecting-ip');
+  try {
+    const anonymous: number[] = [];
+    for (let i = 0; i < 3; i++) {
+      anonymous.push((await book({startAt: await localMoment(TZ, 9, `${10 + i}:00`), phone: `+7999222000${i}`})).status);
+    }
+    assertEquals(anonymous, [201, 201, 201]);
+
+    const trusted = {'cf-connecting-ip': `192.0.2.${Math.floor(Math.random() * 200)}`};
+    const limited: number[] = [];
+    for (let i = 0; i < 2; i++) {
+      limited.push((await book({startAt: await localMoment(TZ, 10, `${10 + i}:00`), phone: `+7999333000${i}`}, undefined, trusted)).status);
+    }
+    assertEquals(limited, [201, 429]);
+  } finally {
+    Deno.env.delete('RL_BOOKINGS_PER_10MIN');
+    Deno.env.delete('CLIENT_IP_HEADERS');
   }
 });

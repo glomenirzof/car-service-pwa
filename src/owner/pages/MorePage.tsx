@@ -11,7 +11,7 @@ import {Text} from '@astryxdesign/core/Text';
 import {TextInput} from '@astryxdesign/core/TextInput';
 import {Token} from '@astryxdesign/core/Token';
 import {useToast} from '@astryxdesign/core/Toast';
-import {BellRing, Copy, ImagePlus, LogOut, Trash2} from 'lucide-react';
+import {BellOff, BellRing, Copy, ImagePlus, LogOut, Trash2} from 'lucide-react';
 import {ScreenHeader} from '@/components/app/ScreenHeader';
 import {NativeField} from '@/components/app/NativeField';
 import {MediaImage} from '@/components/app/MediaImage';
@@ -20,11 +20,12 @@ import {errorMessage} from '@/shared/api';
 import {env} from '@/shared/env';
 import {pushSupport} from '@/shared/platform';
 import {subscribeToPush} from '@/shared/pwa';
+import {safeStorage} from '@/shared/storage';
 import {dateShort, time} from '@/shared/format';
 import {addDays, localDate} from '@shared/periods';
 import {useNow} from '@/shared/use-now';
 import {useBoot} from '@/app/boot-context';
-import {useAuth} from '../auth';
+import {ownerPushKey, useAuth} from '../auth';
 import {useOwnerStudio} from '../owner-context';
 import {useOwnerFetch, useOwnerMutation, usePushStatus, useSchedule} from '../api';
 import {supabase} from '../supabase';
@@ -53,6 +54,8 @@ export function MorePage() {
   const delException = useOwnerMutation<string>(studio.tenantId, (date) => ({path: `/t/${studio.tenantId}/exceptions/${date}`, method: 'DELETE'}));
   const delMedia = useOwnerMutation<string>(studio.tenantId, (id) => ({path: `/t/${studio.tenantId}/media/${id}`, method: 'DELETE'}));
   const [pushState, setPushState] = useState<'idle' | 'working'>('idle');
+  // Endpoint this device subscribed with (cleared on logout).
+  const [devicePush, setDevicePush] = useState(() => safeStorage.get<string | null>(ownerPushKey(slug), null));
   const [exc, setExc] = useState({date: addDays(today, 1), closed: true, opens: '10:00', closes: '16:00', note: ''});
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -64,10 +67,28 @@ export function MorePage() {
     try {
       const subscription = await subscribeToPush(slug, env.vapidPublicKey);
       await f(`/t/${studio.tenantId}/push`, {method: 'POST', body: {subscription}});
+      safeStorage.set(ownerPushKey(slug), subscription.endpoint);
+      setDevicePush(subscription.endpoint);
       await push.refetch();
       toast({body: 'Уведомления включены на этом устройстве'});
     } catch (e) {
       toast({body: (e as Error).message === 'denied' ? 'Уведомления запрещены в настройках браузера' : errorMessage(e), type: 'error'});
+    } finally {
+      setPushState('idle');
+    }
+  };
+
+  const disablePush = async () => {
+    if (!devicePush) return;
+    setPushState('working');
+    try {
+      await f(`/t/${studio.tenantId}/push/delete`, {method: 'POST', body: {endpoint: devicePush}});
+      safeStorage.remove(ownerPushKey(slug));
+      setDevicePush(null);
+      await push.refetch();
+      toast({body: 'Уведомления на этом устройстве отключены'});
+    } catch (e) {
+      toast({body: errorMessage(e), type: 'error'});
     } finally {
       setPushState('idle');
     }
@@ -120,7 +141,9 @@ export function MorePage() {
               {push.data.devices ? `Подключено устройств: ${push.data.devices}.` : 'На ваших устройствах уведомления не включены.'}
             </Text>
           )}
-          {support.ok ? (
+          {devicePush ? (
+            <Button label="Отключить на этом устройстве" icon={<BellOff size={16} />} onClick={() => void disablePush()} isLoading={pushState === 'working'} />
+          ) : support.ok ? (
             <Button label="Включить на этом устройстве" icon={<BellRing size={16} />} onClick={() => void enablePush()} isLoading={pushState === 'working'} />
           ) : support.reason === 'ios-not-installed' ? (
             <Banner status="info" title="iPhone: только из приложения" description="Добавьте кабинет на экран «Домой» (Поделиться → На экран Домой) и включите уведомления оттуда." />

@@ -28,12 +28,12 @@
     "tenant:publish": "tsx scripts/tenant/publish.ts",
     "tenant:verify": "tsx scripts/tenant/verify.ts",
     "owner:invite": "tsx scripts/tenant/owner-invite.ts",
-    "functions:serve": "deno run --allow-net --allow-env --allow-read --allow-sys --config supabase/functions/deno.json scripts/functions-dev-server.ts",
+    "functions:serve": "deno run --allow-net --allow-env --allow-read --allow-sys --env-file=supabase/functions/.env --config supabase/functions/deno.json scripts/functions-dev-server.ts",
     "astryx": "node node_modules/@astryxdesign/cli/clients/cli/bin/astryx.mjs"
   },
   "dependencies": {
-    "@astryxdesign/core": "^0.6.3",
-    "@astryxdesign/theme-neutral": "^0.6.3",
+    "@astryxdesign/core": "0.6.3",
+    "@astryxdesign/theme-neutral": "0.6.3",
     "@base-ui/react": "^1.8.0",
     "@fontsource-variable/inter": "^5.3.0",
     "@stylexjs/stylex": "^0.19.1",
@@ -55,7 +55,7 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
-    "@astryxdesign/cli": "^0.6.3",
+    "@astryxdesign/cli": "0.6.3",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.63.0",
     "@tailwindcss/vite": "^4.3.3",

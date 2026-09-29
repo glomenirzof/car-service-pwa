@@ -3,10 +3,9 @@
 // atomic counters in Postgres. If the LLM is unavailable the endpoint answers
 // 503 — booking itself never depends on it.
 import {asAnon, asUser, one} from '../_shared/db.ts';
-import {HttpError, json, readJson, serveRoutes, clientIp} from '../_shared/http.ts';
-import {ipKey} from '../_shared/crypto.ts';
+import {HttpError, json, readJson, serveRoutes} from '../_shared/http.ts';
 import {requireOwner} from '../_shared/auth.ts';
-import {enforce, hit, usage} from '../_shared/limits.ts';
+import {clientKey, enforce, hit, PUBLIC_LIMITS, usage} from '../_shared/limits.ts';
 import {envInt, optionalEnv} from '../_shared/env.ts';
 import {clientAssistantBody, ownerAssistantBody} from '../_shared/core/contract.ts';
 import {llmConfigured, LlmUnavailable, LlmToolsUnsupported} from '../_shared/assistant/llm.ts';
@@ -54,8 +53,8 @@ export const handler = serveRoutes('assistant', [
     pattern: /^\/client$/,
     handler: async (req) => {
       const body = await readJson(req, clientAssistantBody);
-      const ip = await ipKey(clientIp(req));
-      await enforce({bucket: `ai:ip:${ip}`, windowSeconds: 60, max: envInt('RL_AI_PER_MIN', 8)}, {bucket: `ai:ipd:${ip}`, windowSeconds: DAY, max: envInt('RL_AI_PER_DAY', 60)});
+      const ip = await clientKey(req);
+      await enforce(PUBLIC_LIMITS.aiMinute(ip), PUBLIC_LIMITS.aiDay(ip));
       if (!llmConfigured()) throw new HttpError(503, 'ai_unavailable', 'Ассистент не настроен. Запись работает как обычно.');
       const tenant = await asAnon(async (tx) => one<PublicTenant | null>(await tx`select app.public_tenant(${body.slug}) as r`));
       if (!tenant) throw new HttpError(404, 'tenant_unavailable');

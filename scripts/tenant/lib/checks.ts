@@ -1,7 +1,7 @@
 // Deep validation beyond the Zod schema: image files, sizes, accent contrast.
 import sharp from 'sharp';
 import {join} from 'node:path';
-import {loadTenant, tenantDir, mediaImages} from './load.ts';
+import {listTenantSlugs, loadTenant, tenantDir, mediaImages} from './load.ts';
 import type {BusinessConfig} from '../../../supabase/functions/_shared/core/tenant-config.ts';
 
 export type Report = {slug: string; ok: boolean; errors: string[]; warnings: string[]; config?: BusinessConfig};
@@ -49,6 +49,20 @@ export async function checkTenant(slug: string): Promise<Report> {
   const unused = [...reachable].filter((c) => !cfg.services.some((s) => s.capability === c));
   if (unused.length) warnings.push(`ресурсы умеют ${unused.join(', ')}, но таких услуг нет`);
   if (cfg.services.every((s) => !s.popular)) warnings.push('ни одна услуга не отмечена popular — главный экран покажет первые по списку');
+
+  // A studio cloned with --from keeps the source's texts until someone edits them.
+  for (const other of listTenantSlugs()) {
+    if (other === slug) continue;
+    const o = loadTenant(other);
+    if (!o.ok) continue;
+    const same = [
+      o.config.name === cfg.name && 'название',
+      o.config.contacts.phone === cfg.contacts.phone && 'телефон',
+      o.config.contacts.address === cfg.contacts.address && 'адрес',
+      o.config.description === cfg.description && 'описание',
+    ].filter(Boolean);
+    if (same.length) warnings.push(`совпадает со студией ${other}: ${same.join(', ')} — замените данные клона`);
+  }
 
   return {slug, ok: errors.length === 0, errors, warnings, config: cfg};
 }

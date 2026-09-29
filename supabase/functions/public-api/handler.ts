@@ -2,9 +2,9 @@
 // The client identifies the studio by slug (public) and never sends tenant_id,
 // price or duration. Booking access = bearer token; only its hash is stored.
 import {asAnon, one} from '../_shared/db.ts';
-import {HttpError, json, readJson, query, serveRoutes, clientIp} from '../_shared/http.ts';
-import {deriveBookingToken, ipKey, tokenHash} from '../_shared/crypto.ts';
-import {enforce, PUBLIC_LIMITS} from '../_shared/limits.ts';
+import {HttpError, json, readJson, query, serveRoutes} from '../_shared/http.ts';
+import {deriveBookingToken, tokenHash} from '../_shared/crypto.ts';
+import {clientKey, enforce, PUBLIC_LIMITS} from '../_shared/limits.ts';
 import {
   availabilityQuery,
   cancelBody,
@@ -19,9 +19,7 @@ import {daysBetween} from '../_shared/core/periods.ts';
 
 const SLUG = '([a-z0-9-]{2,40})';
 
-async function ip(req: Request) {
-  return ipKey(clientIp(req));
-}
+const ip = clientKey;
 
 export const handler = serveRoutes('public-api', [
   {

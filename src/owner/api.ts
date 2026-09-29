@@ -2,7 +2,7 @@ import {keepPreviousData, useMutation, useQuery, useQueryClient} from '@tanstack
 import {ApiError, apiRequest} from '@/shared/api';
 import type {Availability} from '@/shared/types';
 import type {AssistantReply} from '@shared/contract';
-import {useAuth} from './auth';
+import {OWNER_CONTEXT_KEY, useAuth} from './auth';
 import type {Membership, OwnerBooking, OwnerTenant, Schedule, SearchResult, Stats} from './types';
 
 type Method = 'GET' | 'POST' | 'PUT' | 'DELETE';
@@ -22,7 +22,7 @@ export function useOwnerFetch() {
 }
 
 export const ok = {
-  context: () => ['owner', 'context'] as const,
+  context: () => OWNER_CONTEXT_KEY,
   tenant: (t: string) => ['owner', t, 'tenant'] as const,
   schedule: (t: string, from: string, to: string) => ['owner', t, 'schedule', from, to] as const,
   booking: (t: string, id: string) => ['owner', t, 'booking', id] as const,

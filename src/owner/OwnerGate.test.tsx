@@ -34,6 +34,9 @@ vi.mock('./supabase', () => ({
   }),
 }));
 
+const push = vi.hoisted(() => ({endpoint: null as string | null}));
+vi.mock('@/shared/pwa', () => ({currentPushEndpoint: async () => push.endpoint}));
+
 const ownerBoot = {...testBoot, app: 'owner' as const, basePath: '/s/alpha/owner'};
 
 function json(body: unknown, status = 200) {
@@ -71,6 +74,7 @@ describe('owner cabinet gate', () => {
     auth.session = null;
     auth.listeners = [];
     auth.signOutCalls = 0;
+    push.endpoint = null;
     vi.restoreAllMocks();
   });
 
@@ -107,14 +111,21 @@ describe('owner cabinet gate', () => {
 
   it('logout drops cached private data, chat history and the stored session', async () => {
     auth.session = {access_token: 'tok', user: {id: 'u1', email: 'me@example.com'}};
-    vi.spyOn(globalThis, 'fetch').mockImplementation(async (input) => {
+    push.endpoint = 'https://push.example/device-1';
+    const forgotten: {body: unknown; signOutsBefore: number}[] = [];
+    vi.spyOn(globalThis, 'fetch').mockImplementation(async (input, init) => {
       const url = String(input);
+      if (url.endsWith('/t/t-alpha/push/delete')) {
+        forgotten.push({body: JSON.parse(String(init?.body)), signOutsBefore: auth.signOutCalls});
+        return json({subscribed: false});
+      }
       if (url.endsWith('/context')) return json({user: {id: 'u1', email: 'me@example.com'}, tenants: [{tenantId: 't-alpha', slug: 'alpha', name: 'Alpha', role: 'owner', status: 'live'}]});
       if (url.endsWith('/t/t-alpha/tenant')) return json({tenant: {id: 't-alpha', slug: 'alpha', name: 'Alpha', timezone: 'Europe/Moscow', status: 'live', services: [], resources: []}});
       return json({error: 'not_found'}, 404);
     });
     safeStorage.set('owner-chat:alpha', [{role: 'user', content: 'выручка'}], 'session');
     safeStorage.set('sb-owner-alpha', {access_token: 'tok'});
+    safeStorage.set('owner-push:alpha', 'https://push.example/device-1');
 
     const {queryClient} = renderOwner();
     expect(await screen.findByText('schedule-screen')).toBeInTheDocument();
@@ -124,10 +135,13 @@ describe('owner cabinet gate', () => {
 
     await waitFor(() => expect(screen.getByRole('heading', {name: 'Кабинет'})).toBeInTheDocument());
     expect(auth.signOutCalls).toBe(1);
+    // This device's owner push subscription is removed on the server before the token goes away.
+    expect(forgotten).toEqual([{body: {endpoint: 'https://push.example/device-1'}, signOutsBefore: 0}]);
     // Only the (disabled, empty) context query of the login screen may exist.
     expect(queryClient.getQueryCache().getAll().filter((q) => q.state.data !== undefined)).toHaveLength(0);
     expect(safeStorage.get('owner-chat:alpha', null, 'session')).toBeNull();
     expect(safeStorage.get('sb-owner-alpha', null)).toBeNull();
+    expect(safeStorage.get('owner-push:alpha', null)).toBeNull();
   });
 
   it('signs out when the server rejects the token', async () => {

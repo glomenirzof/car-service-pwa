@@ -1,6 +1,6 @@
 // Minimal HTTP helpers: JSON responses, CORS, typed errors, request parsing.
 import {z} from 'zod';
-import {allowedOrigins} from './env.ts';
+import {allowedOrigins, optionalEnv} from './env.ts';
 
 export class HttpError extends Error {
   constructor(
@@ -94,11 +94,20 @@ export function serveRoutes(fn: string, routes: Route[]) {
   };
 }
 
-export function clientIp(req: Request): string {
-  return (
-    req.headers.get('cf-connecting-ip') ??
-    req.headers.get('x-real-ip') ??
-    req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
-    'unknown'
-  );
+/**
+ * Client IP from the first configured proxy header that is present
+ * (CLIENT_IP_HEADERS, default "cf-connecting-ip,x-real-ip,x-forwarded-for").
+ * List only headers the hosting proxy sets itself. null when none is present:
+ * callers must not lump such requests into one shared bucket.
+ */
+export function clientIp(req: Request): string | null {
+  const names = (optionalEnv('CLIENT_IP_HEADERS') ?? 'cf-connecting-ip,x-real-ip,x-forwarded-for')
+    .split(',')
+    .map((s) => s.trim().toLowerCase())
+    .filter(Boolean);
+  for (const name of names) {
+    const value = req.headers.get(name)?.split(',')[0]?.trim();
+    if (value) return value;
+  }
+  return null;
 }
